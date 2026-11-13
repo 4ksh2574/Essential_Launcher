@@ -97,7 +97,7 @@ def main() -> int:
     # rewritten.
     strings_dir = UPSTREAM / "lawnchair" / "res"
     replaced_files = 0
-    for file_path in strings_dir.glob("values*/strings.xml":
+    for file_path in strings_dir.glob("values*/strings.xml"):
         original = file_path.read_text(encoding="utf-8")
         # Replace names only inside string values. Keep copyright headers and
         # attribution comments untouched.
