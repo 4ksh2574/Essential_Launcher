@@ -1,5 +1,5 @@
 name: Essential Launcher Android build
-run-name: Essential Launcher build (${{ github.ref_name }})
+run-name: Essential Launcher Android build (${{ github.ref_name }})
 
 on:
   push:
