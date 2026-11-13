@@ -57,6 +57,7 @@ import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
+import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.OverflowMenuGrouped
