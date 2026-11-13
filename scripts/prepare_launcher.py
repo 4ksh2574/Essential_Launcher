@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply AX Home product identity to the vendored Android launcher source.
+"""Apply Essential Launcher product identity to the vendored Android launcher source.
 
 This script changes the application identity, release artifact name and
 user-facing product strings. Internal upstream package namespaces and
@@ -46,7 +46,7 @@ def main() -> int:
         return 2
 
     props = read_properties(PROPERTIES)
-    app_name = props.get("name", "AX Home")
+    app_name = props.get("name", "Essential Launcher")
     application_id = props.get("applicationId", "com.axo.axhome")
     version = props.get("version", "1.0.0")
 
@@ -106,20 +106,20 @@ def main() -> int:
 
     build = replace_once(
         build,
-        r'resValue\("string", "derived_app_name", "(?:Lawnchair \(Debug\)|AX Home)"\)',
+        r'resValue\("string", "derived_app_name", "(?:Lawnchair \(Debug\)|AX Home|Essential Launcher)"\)',
         f'resValue("string", "derived_app_name", "{app_name}")',
         "debug app label",
     )
     build = replace_once(
         build,
-        r'resValue\("string", "derived_app_name", "(?:Lawnchair|AX Home)"\)',
+        r'resValue\("string", "derived_app_name", "(?:Lawnchair|AX Home|Essential Launcher)"\)',
         f'resValue("string", "derived_app_name", "{app_name}")',
         "release app label",
     )
     build = replace_once(
         build,
         r'output\.outputFileName\.set\("[^"]+\.apk"\)',
-        f'output.outputFileName.set("AXHome{version}.apk")',
+        f'output.outputFileName.set("EssentialLauncher{version}.apk")',
         "APK filename",
     )
 
@@ -134,7 +134,7 @@ def main() -> int:
 
         def replace_brand(match: re.Match[str]) -> str:
             value = re.sub(
-                r"lawnchair",
+                r"lawnchair|AX Home",
                 lambda _: app_name,
                 match.group(2),
                 flags=re.IGNORECASE,
