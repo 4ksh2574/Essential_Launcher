@@ -88,6 +88,21 @@ class AboutViewModel(
                 labelResId = R.string.github,
                 url = "https://github.com/4ksh2574/AXHome",
             ),
+            Link(
+                iconResId = R.drawable.ic_x_twitter,
+                labelResId = R.string.x_twitter,
+                url = "https://x.com/4ksh2574",
+            ),
+            Link(
+                iconResId = R.drawable.ic_youtube,
+                labelResId = R.string.profile_youtube,
+                url = "https://www.youtube.com/@4ksh2574",
+            ),
+            Link(
+                iconResId = R.drawable.ic_website,
+                labelResId = R.string.profile_chess,
+                url = "https://www.chess.com/member/4ksh2574",
+            ),
         )
     }
 }
