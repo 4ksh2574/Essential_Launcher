@@ -34,7 +34,14 @@ jobs:
             exit 1
           fi
           echo "$(dirname "$SDKMANAGER")" >> "$GITHUB_PATH"
+          set +o pipefail
           yes | "$SDKMANAGER" --sdk_root="$ANDROID_HOME" --licenses
+          LICENSE_STATUS=$?
+          set -o pipefail
+          if [ "$LICENSE_STATUS" -ne 0 ]; then
+            echo "Android SDK licence acceptance failed with exit code $LICENSE_STATUS"
+            exit "$LICENSE_STATUS"
+          fi
           "$SDKMANAGER" --sdk_root="$ANDROID_HOME" --install "platforms;android-37"
 
       - name: Set up Gradle
