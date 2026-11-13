@@ -1,1 +1,1 @@
-Homescreen based on Launcher3 from AOSP
+A customisable Android home screen with a clean, modern feel.

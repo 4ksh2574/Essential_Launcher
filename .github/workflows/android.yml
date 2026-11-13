@@ -7,14 +7,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
-    name: Build Essential Launcher
+    name: Build AX Home
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout project
+      - name: Checkout AX Home source
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -28,37 +28,7 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      - name: Import launcher source into repository
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ ! -f launcher-core/build.gradle ]; then
-            tmp="$(mktemp -d)"
-            trap 'rm -rf "$tmp"' EXIT
-
-            curl -fL --retry 3 "https://github.com/LawnchairLauncher/lawnchair/archive/222ddef8094081ff590b3553ac71cb8ac318c663.zip" -o "$tmp/launcher.zip"
-            unzip -q "$tmp/launcher.zip" -d "$tmp/launcher"
-            source_dir="$(find "$tmp/launcher" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
-            mkdir -p launcher-core
-            cp -a "$source_dir"/. launcher-core/
-            rm -f launcher-core/.gitmodules
-
-            curl -fL --retry 3 "https://github.com/LawnchairLauncher/platform_frameworks_libs_systemui/archive/233c33f3934cb364d997f42d989785d51d09530a.zip" -o "$tmp/systemui.zip"
-            unzip -q "$tmp/systemui.zip" -d "$tmp/systemui"
-            systemui_dir="$(find "$tmp/systemui" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
-            mkdir -p launcher-core/platform_frameworks_libs_systemui
-            cp -a "$systemui_dir"/. launcher-core/platform_frameworks_libs_systemui/
-
-            if [ "$GITHUB_REF" = "refs/heads/main" ]; then
-              git config user.name "github-actions[bot]"
-              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-              git add launcher-core
-              git commit -m "Vendor Android launcher source"
-              git push origin HEAD:main
-            fi
-          fi
-
-      - name: Apply project identity
+      - name: Apply AX Home identity
         run: python3 scripts/prepare_launcher.py
 
       - name: Build debug APK
@@ -76,14 +46,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          find launcher-core/build/outputs/apk -type f -name 'EssentialLauncher*.apk' -print -exec cp {} dist/ \;
+          find launcher-core/build/outputs/apk -type f -name 'AXHome*.apk' -print -exec cp {} dist/ \;
           test -n "$(find dist -type f -name '*.apk' -print -quit)"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v7
         with:
-          name: EssentialLauncher-${{ github.ref_name }}
-          path: dist/EssentialLauncher*.apk
+          name: AXHome-${{ github.ref_name }}
+          path: dist/AXHome*.apk
           if-no-files-found: error
           retention-days: 14
 
@@ -91,6 +61,6 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         uses: softprops/action-gh-release@v2
         with:
-          name: Essential Launcher ${{ github.ref_name }}
-          files: dist/EssentialLauncher*.apk
+          name: AX Home ${{ github.ref_name }}
+          files: dist/AXHome*.apk
           generate_release_notes: true

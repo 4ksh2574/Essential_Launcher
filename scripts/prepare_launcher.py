@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Apply Essential Launcher identity to the vendored launcher source.
+"""Apply AX Home product identity to the vendored Android launcher source.
 
-The launcher engine is stored in launcher-core. This script patches only the
-build identity and user-facing product name; it deliberately keeps upstream
-package namespaces and copyright notices intact.
+This script changes the application identity, release artifact name and
+user-facing product strings. Internal upstream package namespaces and
+required copyright/licence notices remain unchanged.
 """
 from __future__ import annotations
 
@@ -31,19 +31,25 @@ def read_properties(path: Path) -> dict[str, str]:
 def replace_once(text: str, pattern: str, replacement: str, label: str) -> str:
     updated, count = re.subn(pattern, replacement, text, count=1, flags=re.MULTILINE)
     if count != 1:
-        raise RuntimeError(f"Expected one {label} in upstream build.gradle, found {count}")
+        raise RuntimeError(
+            f"Expected one {label} in launcher-core/build.gradle, found {count}"
+        )
     return updated
 
 
 def main() -> int:
     if not (UPSTREAM / "build.gradle").is_file():
-        print("Missing launcher-core/build.gradle. Ensure the vendored launcher source is present.", file=sys.stderr)
+        print(
+            "Missing launcher-core/build.gradle. Ensure the launcher source is present.",
+            file=sys.stderr,
+        )
         return 2
 
     props = read_properties(PROPERTIES)
-    app_name = props.get("name", "Essential Launcher")
-    application_id = props.get("applicationId", "com.axo.essentiallauncher")
+    app_name = props.get("name", "AX Home")
+    application_id = props.get("applicationId", "com.axo.axhome")
     version = props.get("version", "1.0.0")
+
     # A vMAJOR.MINOR.PATCH Git tag controls the release build version.
     if os.environ.get("GITHUB_REF", "").startswith("refs/tags/v"):
         version = os.environ.get("GITHUB_REF_NAME", "")[1:]
@@ -59,51 +65,85 @@ def main() -> int:
     build_file = UPSTREAM / "build.gradle"
     build = build_file.read_text(encoding="utf-8")
 
-    build = replace_once(build, r'^final def version = "[^"]+"$',
-                         f'final def version = "{version}"', "launcher version")
-    build = replace_once(build,
-                         r'^final def versionDisplayName = .*$',
-                         'final def versionDisplayName = "${version}"',
-                         "display version")
-    build = replace_once(build, r'^\s*versionCode\s+[^\n]+$',
-                         f'        versionCode {version_code}', "versionCode")
+    build = replace_once(
+        build,
+        r'^final def version = "[^"]+"$',
+        f'final def version = "{version}"',
+        "launcher version",
+    )
+    build = replace_once(
+        build,
+        r"^final def versionDisplayName = .*$",
+        'final def versionDisplayName = "${version}"',
+        "display version",
+    )
+    build = replace_once(
+        build,
+        r"^\s*versionCode\s+[^\n]+$",
+        f"        versionCode {version_code}",
+        "versionCode",
+    )
 
-    # Only the three distribution flavors are changed; internal app namespaces
-    # such as app.lawnchair.* remain intact for source compatibility.
-    build = replace_once(build, r"applicationId 'app\.lawnchair'$",
-                         f"applicationId '{application_id}'", "GitHub applicationId")
-    build = replace_once(build, r"applicationId 'app\.lawnchair\.nightly'",
-                         f"applicationId '{application_id}.nightly'", "nightly applicationId")
-    build = replace_once(build, r'applicationId "app\.lawnchair\.play"',
-                         f'applicationId "{application_id}.play"', "Play applicationId")
+    # The internal Gradle flavor and package namespaces remain untouched.
+    build = replace_once(
+        build,
+        r"applicationId 'app\.lawnchair'$",
+        f"applicationId '{application_id}'",
+        "GitHub applicationId",
+    )
+    build = replace_once(
+        build,
+        r"applicationId 'app\.lawnchair\.nightly'",
+        f"applicationId '{application_id}.nightly'",
+        "nightly applicationId",
+    )
+    build = replace_once(
+        build,
+        r'applicationId "app\.lawnchair\.play"',
+        f'applicationId "{application_id}.play"',
+        "Play applicationId",
+    )
 
-    build = replace_once(build,
-                         r'resValue\("string", "derived_app_name", "Lawnchair \(Debug\)"\)',
-                         f'resValue("string", "derived_app_name", "{app_name}")',
-                         "debug app label")
-    build = replace_once(build,
-                         r'resValue\("string", "derived_app_name", "Lawnchair"\)',
-                         f'resValue("string", "derived_app_name", "{app_name}")',
-                         "release app label")
-    build = replace_once(build,
-                         r'output\.outputFileName\.set\("Lawnchair\.\$\{output\.versionName\.get\(\)\}\.\$channel\.\$\{variant\.buildType\}\.apk"\)',
-                         f'output.outputFileName.set("EssentialLauncher{version}.apk")',
-                         "APK filename")
+    build = replace_once(
+        build,
+        r'resValue\("string", "derived_app_name", "Lawnchair \(Debug\)"\)',
+        f'resValue("string", "derived_app_name", "{app_name}")',
+        "debug app label",
+    )
+    build = replace_once(
+        build,
+        r'resValue\("string", "derived_app_name", "Lawnchair"\)',
+        f'resValue("string", "derived_app_name", "{app_name}")',
+        "release app label",
+    )
+    build = replace_once(
+        build,
+        r'output\.outputFileName\.set\("Lawnchair\.\$\{output\.versionName\.get\(\)\}\.\$channel\.\$\{variant\.buildType\}\.apk"\)',
+        f'output.outputFileName.set("AXHome{version}.apk")',
+        "APK filename",
+    )
 
     build_file.write_text(build, encoding="utf-8")
 
-    # Translate the old product name in Lawnchair's own settings/onboarding
-    # strings. AOSP/Android framework strings and source package names are not
-    # rewritten.
+    # Replace the brand only in actual string resources, not copyright headers
+    # or comments. This also updates translated settings/onboarding copy.
     strings_dir = UPSTREAM / "lawnchair" / "res"
     replaced_files = 0
     for file_path in strings_dir.glob("values*/strings.xml"):
         original = file_path.read_text(encoding="utf-8")
-        # Replace names only inside string values. Keep copyright headers and
-        # attribution comments untouched.
+
+        def replace_brand(match: re.Match[str]) -> str:
+            value = re.sub(
+                r"lawnchair",
+                lambda _: app_name,
+                match.group(2),
+                flags=re.IGNORECASE,
+            )
+            return match.group(1) + value + match.group(3)
+
         updated = re.sub(
-            r"(<string\b[^>]*>)(.*?)(</string>)",
-            lambda match: match.group(1) + match.group(2).replace("Lawnchair", app_name) + match.group(3),
+            r"(<string\s+[^>]*>)(.*?)(</string>)",
+            replace_brand,
             original,
             flags=re.DOTALL,
         )
