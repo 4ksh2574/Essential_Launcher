@@ -587,6 +587,9 @@
 
     <string name="product">Product</string>
     <string name="design_and_development">Design and development</string>
+    <string name="creator_role">Creator and maintainer</string>
+    <string name="created_by">Created by</string>
+    <string name="pixel_edition">Pixel Edition</string>
     <string name="development">Development</string>
     <string name="quickswitch_maintenance">QuickSwitch maintenance</string>
     <string name="devops">DevOps</string>
