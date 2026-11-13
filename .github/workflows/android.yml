@@ -24,11 +24,14 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android 37 SDK
-        run: sdkmanager "platforms;android-37"
+      # GitHub-hosted Ubuntu runners already include the Android SDK.
+      # Avoid setup-android's deprecated "tools" package installation.
+      - name: Configure Android SDK
+        shell: bash
+        run: |
+          echo "$ANDROID_HOME/cmdline-tools/16.0/bin" >> "$GITHUB_PATH"
+          yes | "$ANDROID_HOME/cmdline-tools/16.0/bin/sdkmanager" --sdk_root="$ANDROID_HOME" --licenses
+          "$ANDROID_HOME/cmdline-tools/16.0/bin/sdkmanager" --sdk_root="$ANDROID_HOME" --install "platforms;android-37"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
