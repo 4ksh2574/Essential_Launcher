@@ -33,16 +33,12 @@ jobs:
             find "$ANDROID_HOME" -maxdepth 4 -type f -name sdkmanager -print || true
             exit 1
           fi
-          echo "$(dirname "$SDKMANAGER")" >> "$GITHUB_PATH"
-          set +o pipefail
-          yes | "$SDKMANAGER" --sdk_root="$ANDROID_HOME" --licenses
-          LICENSE_STATUS=$?
-          set -o pipefail
-          if [ "$LICENSE_STATUS" -ne 0 ]; then
-            echo "Android SDK licence acceptance failed with exit code $LICENSE_STATUS"
-            exit "$LICENSE_STATUS"
-          fi
-          "$SDKMANAGER" --sdk_root="$ANDROID_HOME" --install "platforms;android-37"
+
+          mkdir -p "$HOME/.android"
+          touch "$HOME/.android/repositories.cfg"
+          printf 'y\\n%.0s' {1..20} > "$RUNNER_TEMP/android-sdk-licenses.txt"
+          "$SDKMANAGER" --sdk_root="$ANDROID_HOME" --licenses < "$RUNNER_TEMP/android-sdk-licenses.txt"
+          "$SDKMANAGER" --sdk_root="$ANDROID_HOME" --install "platforms;android-36"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
