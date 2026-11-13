@@ -139,9 +139,9 @@ final def isReleaseBuild = ciBuild
         || ciRef.endsWith("-stable"))
 final def devReleaseName = ciBuild ? "Dev.(#${ciRunNumber})" : "Dev.(${buildCommit})"
 
-final def version = "16"
+final def version = "1.0.0"
 final def releaseName = "Beta 1"
-final def versionDisplayName = "${version}.${isReleaseBuild ? releaseName : devReleaseName}"
+final def versionDisplayName = "${version}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
 final def quickstepMinSdk = "35"
@@ -154,7 +154,7 @@ android {
          * Lawnchair Launcher 16.0 Beta 1.0
          * see https://docs.lawnchair.app/developers/standards/development-workflow#versioning-scheme
          */
-        versionCode 16_00_02_01_00
+        versionCode 10000
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
@@ -227,7 +227,7 @@ android {
 
         debug {
             applicationIdSuffix ".debug"
-            resValue("string", "derived_app_name", "Lawnchair (Debug)")
+            resValue("string", "derived_app_name", "AX Home")
 
             manifestPlaceholders.quickstepMinSdk = "0"
             manifestPlaceholders.quickstepMaxSdk = "100000"
@@ -267,17 +267,17 @@ android {
         }
 
         github {
-            applicationId 'app.lawnchair'
+            applicationId 'com.axo.axhome'
             dimension "channel"
         }
 
         nightly {
-            applicationId 'app.lawnchair.nightly'
+            applicationId 'com.axo.axhome.nightly'
             dimension "channel"
         }
 
         play {
-            applicationId "app.lawnchair.play"
+            applicationId "com.axo.axhome.play"
             dimension "channel"
             isDefault true
         }
@@ -349,7 +349,7 @@ androidComponents {
     onVariants(selector().all()) { variant ->
         def channel = variant.productFlavors.last().second
         variant.outputs.forEach { output ->
-            output.outputFileName.set("Lawnchair.${output.versionName.get()}.$channel.${variant.buildType}.apk")
+            output.outputFileName.set("AXHome1.0.0.apk")
         }
 
         // Lawnchair-TODO: A better way to sync proto file to the IDE preventing missing or outdated result. Please remove if this is the best solution we have right now
