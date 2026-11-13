@@ -76,7 +76,7 @@ class AboutViewModel(
         private val team = listOf(
             TeamMember(
                 name = "Λκsη Sηαrmα",
-                role = Role.Creator,
+                role = Role.Maintainer,
                 photoUrl = "https://avatars.githubusercontent.com/u/236537774?v=4",
                 socialUrl = "https://github.com/4ksh2574",
             ),
