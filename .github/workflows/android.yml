@@ -1,4 +1,4 @@
-name: Android build
+name: Essential Launcher Android build
 
 on:
   push:
