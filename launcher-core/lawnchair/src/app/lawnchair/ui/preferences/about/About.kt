@@ -197,7 +197,7 @@ fun About(
         preferenceGroupItems(
             items = uiState.coreTeam,
             isFirstChild = false,
-            heading = { stringResource(id = R.string.created_by) },
+            heading = { stringResource(id = R.string.maintained_by) },
             key = { _, it -> it.name },
         ) { _, it ->
             ContributorRow(
