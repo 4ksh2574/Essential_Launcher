@@ -57,20 +57,16 @@ import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
-import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.OverflowMenuGrouped
-import app.lawnchair.ui.preferences.components.AnnouncementPreference
 import app.lawnchair.ui.preferences.components.controls.PreferenceCategory
-import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.layout.ProvideDescriptionTextStyle
-import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
 import app.lawnchair.ui.preferences.navigation.About
 import app.lawnchair.ui.preferences.navigation.AppDrawer
 import app.lawnchair.ui.preferences.navigation.BackupAndRestore
@@ -100,15 +96,9 @@ fun PreferencesDashboard(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    SyncLiveInformation()
-    val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
 
-    val aboutDescrption = if (prefs.hideVersionInfo.get()) {
-        prefs.pseudonymVersion.get()
-    } else {
-        "${context.getString(R.string.derived_app_name)} ${BuildConfig.MAJOR_VERSION}"
-    }
+    val aboutDescrption = stringResource(R.string.pixel_edition)
 
     PreferenceLayout(
         label = stringResource(id = R.string.settings),
@@ -117,13 +107,6 @@ fun PreferencesDashboard(
         backArrowVisible = false,
         actions = { PreferencesOverflowMenu(currentRoute = currentRoute, onNavigate = onNavigate) },
     ) {
-        AnnouncementPreference()
-
-        if (BuildConfig.APPLICATION_ID.contains("nightly") || BuildConfig.DEBUG) {
-            PreferencesDebugWarning()
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
         if (!context.isDefaultLauncher()) {
             PreferencesSetDefaultLauncherWarning()
             Spacer(modifier = Modifier.height(8.dp))
@@ -320,21 +303,6 @@ fun RowScope.PreferencesOverflowMenu(
 
         Spacer(Modifier.height(MenuDefaults.GroupSpacing))
     }
-}
-
-@Composable
-fun PreferencesDebugWarning(
-    modifier: Modifier = Modifier,
-) {
-    WarningPreference(
-        // Don't move to strings.xml, no need to translate this warning
-        text = "You are using a development build, which may contain bugs and broken features. Use at your own risk!",
-        modifier = modifier.padding(horizontal = 16.dp),
-        standalone = true,
-        colors = ListItemDefaults.segmentedColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer,
-        ),
-    )
 }
 
 @Composable
