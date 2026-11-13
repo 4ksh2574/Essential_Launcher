@@ -36,7 +36,7 @@ jobs:
 
           mkdir -p "$HOME/.android"
           touch "$HOME/.android/repositories.cfg"
-          printf 'y\\n%.0s' {1..20} > "$RUNNER_TEMP/android-sdk-licenses.txt"
+          for i in {1..20}; do echo y; done > "$RUNNER_TEMP/android-sdk-licenses.txt"
           "$SDKMANAGER" --sdk_root="$ANDROID_HOME" --licenses < "$RUNNER_TEMP/android-sdk-licenses.txt"
           "$SDKMANAGER" --sdk_root="$ANDROID_HOME" --install "platforms;android-36"
 
