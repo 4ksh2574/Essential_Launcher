@@ -47,7 +47,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          find launcher-core/build/outputs/apk -type f -name 'EssentialLauncher*.apk' -print -exec cp {} dist/ \\;
+          find launcher-core/build/outputs/apk -type f -name 'EssentialLauncher*.apk' -print -exec cp {} dist/ \;
           test -n "$(find dist -type f -name '*.apk' -print -quit)"
 
       - name: Upload APK artifact
