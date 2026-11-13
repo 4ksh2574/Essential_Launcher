@@ -1,28 +1,27 @@
-# EssentialLauncher
+# Essential Launcher
 
-An Android home-screen launcher project targeting Android 17 (API 37).
+Essential Launcher is built on the **Lawnchair 16** launcher engine. The small Compose prototype previously in this repository has been retired; the project now tracks the upstream launcher source as a pinned Git submodule so upstream's Android 16 launcher, app drawer, settings, widget support, and Quickstep integration can be customised without carrying a second launcher implementation.
 
-## Build on GitHub
+## Source and attribution
 
-Every push to `main`, pull request targeting `main`, or manual workflow run triggers the **Android APK** workflow.
+- Upstream project: [Lawnchair](https://github.com/LawnchairLauncher/lawnchair)
+- Pinned source revision: [`222ddef`](https://github.com/LawnchairLauncher/lawnchair/commit/222ddef8094081ff590b3553ac71cb8ac318c663)
+- License: Apache License 2.0. The upstream license and copyright notices are retained in `launcher-core/LICENSE.txt`.
+- The `launcher-core` directory is a Git submodule. Initialise it with `git submodule update --init --recursive` when cloning locally.
 
-1. Open the repository's **Actions** tab.
-2. Select the latest **Android APK** run.
-3. When it succeeds, open its **Artifacts** section.
-4. Download `EssentialLauncher-debug` and extract the APK from the ZIP.
+Essential Launcher keeps the upstream implementation and package namespaces intact where they are needed for compatibility. The build overlay changes the installed app identity and user-facing launcher name; it does not remove upstream copyright or license notices.
 
-The debug APK is for testing and is not a signed Play Store release.
+## Build
 
-## Project status
+GitHub Actions builds the APK on pushes to `main` and on version tags. The pinned upstream revision and its required SystemUI submodule are checked out automatically.
 
-This is an early launcher scaffold. It registers as an Android Home app, lists launchable apps, launches selected apps, and includes a basic searchable app drawer.
+- App name: `Essential Launcher`
+- Application ID: `com.axo.essentiallauncher`
+- Version: configured in `launcher.properties`
+- APK name: `EssentialLauncher<version>.apk`
 
-Pixel Launcher parity is the project goal, not a claim about the current build. Google-only integrations and privileged system surfaces may not be available to third-party launchers. The implementation will be expanded and tested incrementally.
+For a local build, initialise submodules, install Android SDK components required by the pinned Lawnchair source, run `python3 scripts/prepare_launcher.py`, then run `./gradlew assembleLawnWithQuickstepGithubDebug` from `launcher-core`.
 
-## Technical baseline
+## Customisation
 
-- Kotlin
-- Jetpack Compose
-- Android Gradle Plugin
-- Minimum Android version: 10 (API 29)
-- Target SDK: 37
+The first import intentionally keeps the upstream launcher behaviour and layout close to stock Lawnchair 16. Product styling, home-screen defaults, branding assets, optional system-surface companions, and other Essential-specific changes will be layered on top in later commits.
