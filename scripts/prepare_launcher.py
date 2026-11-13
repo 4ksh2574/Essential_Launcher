@@ -87,38 +87,38 @@ def main() -> int:
     # The internal Gradle flavor and package namespaces remain untouched.
     build = replace_once(
         build,
-        r"applicationId 'app\.lawnchair'$",
+        r"applicationId '(?:app\.lawnchair|com\.axo\.axhome)'$",
         f"applicationId '{application_id}'",
         "GitHub applicationId",
     )
     build = replace_once(
         build,
-        r"applicationId 'app\.lawnchair\.nightly'",
+        r"applicationId '(?:app\.lawnchair\.nightly|com\.axo\.axhome\.nightly)'",
         f"applicationId '{application_id}.nightly'",
         "nightly applicationId",
     )
     build = replace_once(
         build,
-        r'applicationId "app\.lawnchair\.play"',
+        r'applicationId "(?:app\.lawnchair\.play|com\.axo\.axhome\.play)"',
         f'applicationId "{application_id}.play"',
         "Play applicationId",
     )
 
     build = replace_once(
         build,
-        r'resValue\("string", "derived_app_name", "Lawnchair \(Debug\)"\)',
+        r'resValue\("string", "derived_app_name", "(?:Lawnchair \(Debug\)|AX Home)"\)',
         f'resValue("string", "derived_app_name", "{app_name}")',
         "debug app label",
     )
     build = replace_once(
         build,
-        r'resValue\("string", "derived_app_name", "Lawnchair"\)',
+        r'resValue\("string", "derived_app_name", "(?:Lawnchair|AX Home)"\)',
         f'resValue("string", "derived_app_name", "{app_name}")',
         "release app label",
     )
     build = replace_once(
         build,
-        r'output\.outputFileName\.set\("Lawnchair\.\$\{output\.versionName\.get\(\)\}\.\$channel\.\$\{variant\.buildType\}\.apk"\)',
+        r'output\.outputFileName\.set\("[^"]+\.apk"\)',
         f'output.outputFileName.set("AXHome{version}.apk")',
         "APK filename",
     )

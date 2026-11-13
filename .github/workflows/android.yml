@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -30,6 +30,21 @@ jobs:
 
       - name: Apply AX Home identity
         run: python3 scripts/prepare_launcher.py
+
+      - name: Commit AX Home source branding
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add launcher-core/build.gradle launcher-core/lawnchair/res/values*/strings.xml
+          if git diff --cached --quiet; then
+            echo "AX Home source branding is already committed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Apply AX Home source branding"
+          git push origin HEAD:main
 
       - name: Build debug APK
         run: ./gradlew assembleLawnWithQuickstepGithubDebug
