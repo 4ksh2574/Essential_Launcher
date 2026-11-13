@@ -50,14 +50,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
-import app.lawnchair.ui.preferences.components.NavigationActionPreference
-import app.lawnchair.ui.preferences.components.controls.ClickablePreference
-import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
-import app.lawnchair.ui.preferences.components.layout.PreferenceGroupHeading
-import app.lawnchair.ui.preferences.components.layout.PreferenceGroupItem
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
-import app.lawnchair.ui.preferences.navigation.AboutLicenses
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import kotlinx.coroutines.launch
@@ -141,7 +135,7 @@ fun About(
                     text = if (prefs.hideVersionInfo.get()) {
                         prefs.pseudonymVersion.get() + " (pseudonym)"
                     } else {
-                        BuildConfig.VERSION_DISPLAY_NAME
+                        stringResource(id = R.string.pixel_edition)
                     },
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -151,7 +145,7 @@ fun About(
                             onClick = {},
                             onLongClick = {
                                 val commitUrl =
-                                    "https://github.com/LawnchairLauncher/lawnchair/commit/${BuildConfig.COMMIT_HASH}"
+                                    "https://github.com/4ksh2574/AXHome/commit/${BuildConfig.COMMIT_HASH}"
                                 context.startActivity(Intent(Intent.ACTION_VIEW, commitUrl.toUri()))
                             },
                         ),
@@ -203,72 +197,14 @@ fun About(
         preferenceGroupItems(
             items = uiState.coreTeam,
             isFirstChild = false,
-            heading = { stringResource(id = R.string.product) },
+            heading = { stringResource(id = R.string.created_by) },
             key = { _, it -> it.name },
         ) { _, it ->
             ContributorRow(
                 member = it,
             )
         }
-        preferenceGroupItems(
-            items = uiState.supportAndPr,
-            isFirstChild = false,
-            heading = { stringResource(id = R.string.support_and_pr) },
-            key = { _, it -> it.name },
-        ) { _, it ->
-            ContributorRow(
-                member = it,
-            )
-        }
-        preferenceGroupItems(
-            items = uiState.bottomLinks,
-            isFirstChild = false,
-            heading = { stringResource(id = R.string.community) },
-            key = { _, it -> it.labelResId },
-        ) { _, it ->
-            HorizontalLawnchairLink(
-                iconResId = it.iconResId,
-                label = stringResource(id = it.labelResId),
-                url = it.url,
-            )
-        }
-        item {
-            PreferenceGroupHeading(
-                stringResource(R.string.legal),
-            )
-        }
-        item {
-            PreferenceGroupItem(
-                cutTop = false,
-                cutBottom = true,
-            ) {
-                NavigationActionPreference(
-                    label = stringResource(id = R.string.acknowledgements),
-                    destination = AboutLicenses,
-                )
-            }
-        }
-        item {
-            Spacer(Modifier.height(3.dp))
-        }
-        item {
-            PreferenceGroupItem(
-                cutTop = true,
-                cutBottom = false,
-            ) {
-                ClickablePreference(
-                    label = stringResource(id = R.string.privacy_policy),
-                    onClick = {
-                        val webpage = PRIVACY_POLICY.toUri()
-                        val intent = Intent(Intent.ACTION_VIEW, webpage)
-                        if (intent.resolveActivity(context.packageManager) != null) {
-                            context.startActivity(intent)
-                        }
-                    },
-                )
-            }
-        }
+
     }
 }
 
-private const val PRIVACY_POLICY = "https://lawnchair.app/privacy_policy"
