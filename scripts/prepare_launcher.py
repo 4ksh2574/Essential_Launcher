@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Apply Essential Launcher identity to the pinned Lawnchair source checkout.
+"""Apply Essential Launcher identity to the vendored launcher source.
 
-The launcher engine remains in its own upstream git submodule. This script
-patches only the build identity and user-facing product name; it deliberately
-keeps upstream package namespaces and copyright notices intact.
+The launcher engine is stored in launcher-core. This script patches only the
+build identity and user-facing product name; it deliberately keeps upstream
+package namespaces and copyright notices intact.
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ def replace_once(text: str, pattern: str, replacement: str, label: str) -> str:
 
 def main() -> int:
     if not (UPSTREAM / "build.gradle").is_file():
-        print("Missing launcher-core/build.gradle. Initialise the submodule first.", file=sys.stderr)
+        print("Missing launcher-core/build.gradle. Ensure the vendored launcher source is present.", file=sys.stderr)
         return 2
 
     props = read_properties(PROPERTIES)
