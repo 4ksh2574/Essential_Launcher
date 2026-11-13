@@ -86,7 +86,7 @@ class AboutViewModel(
             Link(
                 iconResId = R.drawable.ic_github,
                 labelResId = R.string.github,
-                url = "https://github.com/4ksh2574/AXHome",
+                url = "https://github.com/4ksh2574/Essential_Launcher",
             ),
             Link(
                 iconResId = R.drawable.ic_x_twitter,
