@@ -11,10 +11,10 @@ permissions:
 
 jobs:
   build:
-    name: Build AX Home
+    name: Build Essential Launcher
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout AX Home source
+      - name: Checkout Essential Launcher source
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -28,22 +28,22 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      - name: Apply AX Home identity
+      - name: Apply Essential Launcher identity
         run: python3 scripts/prepare_launcher.py
 
-      - name: Commit AX Home source branding
+      - name: Commit Essential Launcher source branding
         if: github.ref == 'refs/heads/main'
         shell: bash
         run: |
           set -euo pipefail
           git add launcher-core/build.gradle launcher-core/lawnchair/res/values*/strings.xml
           if git diff --cached --quiet; then
-            echo "AX Home source branding is already committed."
+            echo "Essential Launcher source branding is already committed."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Apply AX Home source branding"
+          git commit -m "Apply Essential Launcher source branding"
           git push origin HEAD:main
 
       - name: Build debug APK
@@ -61,14 +61,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          find launcher-core/build/outputs/apk -type f -name 'AXHome*.apk' -print -exec cp {} dist/ \;
+          find launcher-core/build/outputs/apk -type f -name 'EssentialLauncher*.apk' -print -exec cp {} dist/ \;
           test -n "$(find dist -type f -name '*.apk' -print -quit)"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v7
         with:
-          name: AXHome-${{ github.ref_name }}
-          path: dist/AXHome*.apk
+          name: EssentialLauncher-${{ github.ref_name }}
+          path: dist/EssentialLauncher*.apk
           if-no-files-found: error
           retention-days: 14
 
@@ -76,6 +76,6 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         uses: softprops/action-gh-release@v2
         with:
-          name: AX Home ${{ github.ref_name }}
-          files: dist/AXHome*.apk
+          name: Essential Launcher ${{ github.ref_name }}
+          files: dist/EssentialLauncher*.apk
           generate_release_notes: true
