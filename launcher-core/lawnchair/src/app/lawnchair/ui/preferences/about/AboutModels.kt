@@ -60,6 +60,7 @@ data class TeamMember(
  * @param descriptionResId The resource ID of the string describing the role.
  */
 enum class Role(val descriptionResId: Int) {
+    Creator(descriptionResId = R.string.creator_role),
     Development(descriptionResId = R.string.development),
     DevOps(descriptionResId = R.string.devops),
     QuickSwitchMaintenance(descriptionResId = R.string.quickswitch_maintenance),
